@@ -1,0 +1,22 @@
+.error {
+  color: black;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+.error_text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.error_text a {
+  color: rgb(119, 119, 230);
+}
+.error img {
+  width: 20rem;
+}
