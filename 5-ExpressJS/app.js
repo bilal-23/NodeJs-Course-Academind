@@ -7,7 +7,7 @@ const shopRoute = require('./routes/shop.js');
 
 app.use(bodyParser.urlencoded({ extended: false })); //it'll parse body
 
-app.use(adminRoutes);
+app.use('/admin', adminRoutes);
 app.use(shopRoute);
 
 app.use((req, res, next) => {
