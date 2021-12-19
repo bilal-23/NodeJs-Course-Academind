@@ -1,4 +1,3 @@
-const http = require('http');
 const express = require('express');
 
 const app = express();
@@ -9,12 +8,11 @@ app.use((req, res, next) => {
 });
 app.use((req, res, next) => {
     console.log('Inside another middleware');
+    //Headers is automatically setby express
     res.send('<h1>Hello From Express</h1>')
 });
 
 //use allow us to add middleware function
 //next is a function passed to the arrow function which will be exectured after the arrow function
 
-const server = http.createServer(app);
-
-server.listen(3000);
+app.listen(3000);
