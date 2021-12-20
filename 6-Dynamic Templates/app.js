@@ -2,10 +2,16 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const expressHbs = require('express-handlebars');
 const app = express();
 
-app.set('view engine', 'pug');
+// handelbars is not defined in express hence we need to define it first
+app.engine('hbs', expressHbs());
+
+// pug is defined in express
+// app.set('view engine', 'pug'); //for pug 
+
+app.set('view engine', 'hbs') //for handlerbars
 app.set('views', 'views');
 
 const adminData = require('./routes/admin');
