@@ -1,0 +1,19 @@
+{
+  "name": "assignment-4",
+  "version": "1.0.0",
+  "description": "Assignment 4 of Node JS coursr",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "express-handlebars": "^6.0.2",
+    "nodemon": "^2.0.15",
+    "pug": "^3.0.2"
+  }
+}
