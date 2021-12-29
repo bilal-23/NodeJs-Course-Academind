@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-    res.render('add-product', { docTitle: 'Add Product', path: '/admin/add-product' })
+    res.render('admin/add-product', { docTitle: 'Add Product', path: '/admin/add-product' })
 }
 
 exports.addNewProduct = (req, res, next) => {
@@ -12,7 +12,7 @@ exports.addNewProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
     Product.fecthAll((products) => {
-        res.render('shop', { prods: products, docTitle: 'SHOP', path: '/', hasProducts: products.length > 0 });
+        res.render('shop/product-list', { prods: products, docTitle: 'SHOP', path: '/', hasProducts: products.length > 0 });
     });
 
 }
