@@ -83,6 +83,8 @@ main {
 }
 
 .card__actions {
+  justify-content: center;
+  display: flex;
     padding: 1rem;
     text-align: center;
 }
