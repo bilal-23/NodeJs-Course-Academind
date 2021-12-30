@@ -35,7 +35,15 @@ module.exports = class Product {
     });
   }
 
+  //static function are used directly on class and not on the object created by class
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+
+  static findById(id, cb) {
+    getProductsFromFile((products) => {
+      const product = products.find(product => product.id === id);
+      cb(product);
+    })
   }
 };
