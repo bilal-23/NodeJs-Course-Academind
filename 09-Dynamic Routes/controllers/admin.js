@@ -1,15 +1,29 @@
 const Product = require('../models/product');
 
-exports.getAddProduct = (req, res, next) => {
-  res.render('admin/add-product', {
-    pageTitle: 'Add Product',
-    path: '/admin/add-product',
-    formsCSS: true,
-    productCSS: true,
-    activeAddProduct: true
+
+//All products list
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll(products => {
+    res.render('admin/products', {
+      prods: products,
+      pageTitle: 'Admin Products',
+      path: '/admin/products',
+
+    });
   });
 };
 
+//Add product form page
+exports.getAddProduct = (req, res, next) => {
+  res.render('admin/edit-product', {
+    pageTitle: 'Add Product',
+    path: '/admin/add-product',
+    editing: false,
+
+  });
+};
+
+//Add product endpoint
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
@@ -20,12 +34,25 @@ exports.postAddProduct = (req, res, next) => {
   res.redirect('/');
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render('admin/products', {
-      prods: products,
-      pageTitle: 'Admin Products',
-      path: '/admin/products'
-    });
-  });
-};
+//Edit Product page
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit;
+  if (editMode === "false") {
+    res.redirect('/admin/products')
+  }
+
+  const productId = (req.params.productId);
+  Product.findById(productId, (product) => {
+    res.render('admin/edit-product', {
+      product: product,
+      pageTitle: 'Edit Product',
+      path: '/admin/edit-product',
+      editing: editMode,
+    })
+  })
+}
+
+//Edit Product form endpoint
+exports.postEditProduct = (req, res) => {
+
+}
