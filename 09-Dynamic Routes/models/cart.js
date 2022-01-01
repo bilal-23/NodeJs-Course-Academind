@@ -40,7 +40,9 @@ module.exports = class Cart {
                 const updatedCart = { ...cart };
                 console.log(updatedCart);
                 const product = updatedCart.products.find(item => item.id === id);
-                console.log(product);
+                if (!product) {
+                    return;
+                }
                 const quantity = product.quantity;
                 updatedCart.products = updatedCart.products.filter(item => item.id !== id);
                 updatedCart.totalPrice -= (productPrice * quantity);
