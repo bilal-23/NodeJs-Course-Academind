@@ -56,6 +56,17 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res) => {
   const { productId, title, imageUrl, price, description } = req.body;
   const product = new Product(productId, title, imageUrl, description, price);
+  // create new instance 
   product.save();
+  //overwriting on the already saved data
+  res.redirect('/admin/products')
+}
+
+//delete product form endpoint
+exports.postDeleteProduct = (req, res) => {
+  const productId = req.body.productId;
+  //calling method from Product class to delete this product;
+  Product.deleteProduct(productId);
+  //redirect to admin products list
   res.redirect('/admin/products')
 }
