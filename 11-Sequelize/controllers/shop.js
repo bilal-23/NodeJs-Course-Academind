@@ -2,15 +2,24 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll().then(([rows, fieldData]) => {
-    res.render('shop/product-list', {
-      prods: rows,
-      pageTitle: 'All Products',
-      path: '/products'
-    });
-  })
+  Product.findAll()
+    .then((products) => {
+      res.render('shop/product-list', {
+        prods: products,
+        pageTitle: 'All Products',
+        path: '/products'
+      });
+    })
+    .catch(err => console.log("<----Error Generated while fetching products---->"))
+  // Product.fetchAll().then(([rows, fieldData]) => {
+  //   res.render('shop/product-list', {
+  //     prods: rows,
+  //     pageTitle: 'All Products',
+  //     path: '/products'
+  //   });
+  // })
 
-    .catch(err => console.log(err));
+  //   .catch(err => console.log(err));
 };
 
 exports.getProductDetail = (req, res, next) => {
@@ -24,16 +33,23 @@ exports.getProductDetail = (req, res, next) => {
   });
 }
 
+//Index home page 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll().then(([rows, fieldData]) => {
-    res.render('shop/index', {
-      prods: rows,
-      pageTitle: 'Shop',
-      path: '/'
-    });
-  })
+  Product.findAll()
+    .then((products) => {
+      res.render('shop/index', {
+        prods: products,
+        pageTitle: 'Shop',
+        path: '/'
+      });
+    })
+    .catch(err => console.log("<----Error Generated while fetching products---->"))
 
-    .catch(err => console.log(err));
+  // Product.fetchAll().then(([rows, fieldData]) => {
+
+  // })
+
+  //   .catch(err => console.log(err));
   // Product.fetchAll(products => {
   //   res.render('shop/index', {
   //     prods: products,
