@@ -3,14 +3,15 @@ const Product = require('../models/product');
 
 //All products list
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
+  Product.findAll().then(products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products',
-
     });
-  });
+  })
+
+    .catch(err => console.log("<--Error-->", err))
 };
 
 //Add product form page
@@ -19,7 +20,6 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-
   });
 };
 
@@ -36,7 +36,10 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl: imageUrl,
     description: description
   })
-    .then(res => console.log('<----Created Product---->'))
+    .then(result => {
+      console.log('<----Created Product---->')
+      res.redirect('/admin/products');
+    })
     .catch(err => console.log('<----Error creating product---->'));
 
 };
@@ -49,7 +52,7 @@ exports.getEditProduct = (req, res, next) => {
   }
 
   const productId = (req.params.productId);
-  Product.findById(productId, (product) => {
+  Product.findByPk(productId).then((product) => {
     res.render('admin/edit-product', {
       product: product,
       pageTitle: 'Edit Product',
@@ -57,23 +60,42 @@ exports.getEditProduct = (req, res, next) => {
       editing: editMode,
     })
   })
+    .catch(err => console.log("<--Error-->", err))
 }
 
 //Edit Product form endpoint
 exports.postEditProduct = (req, res) => {
   const { productId, title, imageUrl, price, description } = req.body;
-  const product = new Product(productId, title, imageUrl, description, price);
-  // create new instance 
-  product.save();
+
+  Product.findByPk(productId)
+    .then(product => {
+      product.title = title;
+      product.imageUrl = imageUrl;
+      product.price = price;
+      product.description = description;
+      return product.save();
+    })
+    .then(result => {
+      res.redirect('/admin/products')
+      console.log("<----UPDATED PRODUCT---->")
+    })
+    .catch(err => console.log("<----Error Updating Product---->"))
+
   //overwriting on the already saved data
-  res.redirect('/admin/products')
+
 }
 
 //delete product form endpoint
 exports.postDeleteProduct = (req, res) => {
   const productId = req.body.productId;
-  //calling method from Product class to delete this product;
-  Product.deleteProduct(productId);
+  Product.findByPk(productId)
+    .then(product => {
+      return product.destroy();
+    })
+    .then(result => {
+      console.log("<---Product Deleted---->");
+      res.redirect('/admin/products')
+    })
+    .catch(err => console.log("<----Error Deleting Product---->"))
   //redirect to admin products list
-  res.redirect('/admin/products')
 }
