@@ -117,8 +117,13 @@ exports.postCart = (req, res, next) => {
     }
     let newQuantity = 1;
     if(product){
-      // if product already exist inccrease it by 1
-      newQuantity = product.quantity + 1;
+      // if product already exist increase quantity by 1
+      const oldQuantity = product.cartItem.quantity;
+      newQuantity = oldQuantity + 1;
+      return fetchedcart.addProduct(product, {through:{
+        quantity: newQuantity
+      }})
+
     }
     
     // if product is not already in cart, find it in the db
