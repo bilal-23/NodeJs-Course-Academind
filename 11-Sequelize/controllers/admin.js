@@ -3,7 +3,8 @@ const Product = require('../models/product');
 
 //All products list
 exports.getProducts = (req, res, next) => {
-  Product.findAll().then(products => {
+  req.user.
+  getProducts().then(products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
@@ -14,6 +15,7 @@ exports.getProducts = (req, res, next) => {
     .catch(err => console.log("<--Error-->", err))
 };
 
+
 //Add product form page
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -22,6 +24,7 @@ exports.getAddProduct = (req, res, next) => {
     editing: false,
   });
 };
+
 
 //Add product endpoint
 exports.postAddProduct = (req, res, next) => {
@@ -45,6 +48,7 @@ exports.postAddProduct = (req, res, next) => {
 
 };
 
+
 //Edit Product page
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
@@ -53,7 +57,12 @@ exports.getEditProduct = (req, res, next) => {
   }
 
   const productId = (req.params.productId);
-  Product.findByPk(productId).then((product) => {
+  req.user
+  .getProducts({where: { id : productId}}).then((products) => { //products will be an array even if its empty
+    const product = products[0];
+    if(!product){
+      return res.redirect('/');
+    }
     res.render('admin/edit-product', {
       product: product,
       pageTitle: 'Edit Product',
@@ -63,6 +72,7 @@ exports.getEditProduct = (req, res, next) => {
   })
     .catch(err => console.log("<--Error-->", err))
 }
+
 
 //Edit Product form endpoint
 exports.postEditProduct = (req, res) => {
