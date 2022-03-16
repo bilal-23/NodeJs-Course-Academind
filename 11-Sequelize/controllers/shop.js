@@ -98,6 +98,43 @@ exports.getCart = (req, res, next) => {
 };
 
 
+//adds item to the cart for url add-to-cart
+exports.postCart = (req, res, next) => {
+  const productId = req.body.productId.trim();
+  let fetchedcart;
+  req.user
+  .getCart()
+  .then(cart =>{
+    fetchedcart = cart;
+    return cart.getProducts({where: {id: productId}});
+    //get product if it is already in the cart
+  })
+  .then(products =>{
+    let product;
+    //check if the products array is not empty
+    if(products.length > 0){
+      product = products[0];
+    }
+    let newQuantity = 1;
+    if(product){
+      // if product already exist inccrease it by 1
+      newQuantity = product.quantity + 1;
+    }
+    
+    // if product is not already in cart, find it in the db
+    Product.findByPk(productId)
+    .then(product => {
+      return fetchedcart.addProduct(product,{ through: { quantity: newQuantity } });
+    })
+    .catch(err => console.log(`<----Error Generated while fetching product---->`));
+  })
+  .then(result => {
+    console.log(`<----Added to cart---->`)
+    return res.redirect('/cart');
+})
+  .catch(err => console.log(`<----Error Generated while adding to cart---->`, err))
+}
+
 
 //deltew item from cart
 exports.postDeleteCartItem = (req, res) => {
@@ -109,21 +146,13 @@ exports.postDeleteCartItem = (req, res) => {
 }
 
 
-//adds item to the cart for url add-to-cart
-exports.postCart = (req, res, next) => {
-  const productId = req.body.productId.trim();
-  Product.findById(productId, (product) => {
-    Cart.addProduct(productId, +product.price)
-  })
-  res.redirect('/cart')
-}
-
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
     path: '/orders',
     pageTitle: 'Your Orders'
   });
 };
+
 
 exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
