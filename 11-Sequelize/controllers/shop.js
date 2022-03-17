@@ -143,7 +143,19 @@ exports.postCart = (req, res, next) => {
 
 //deltew item from cart
 exports.postDeleteCartItem = (req, res) => {
-  const id = req.body.productId;
+  const prodId = req.body.productId;
+  req.user.getCart()
+  .then(cart =>{
+    cart.getProducts({where: {id :prodId}});
+  })
+  .then(products =>{
+    const product = products[0];
+    product.cartItem.destroy();
+  })
+  .then(result =>{
+    console.log(`<----Deleted from cart---->`, result)
+  })
+  .catch(err => console.log(`<----Error Generated while fetching cart---->`, err))
   Product.findById(id, product => {
     Cart.deleteProduct(id, product.price);
     res.redirect('/cart');
