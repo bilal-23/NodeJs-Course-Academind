@@ -46,6 +46,9 @@
                         
                     </div>
                     <p style="font-size: 2rem;font-weight: bold;">Total Price: $<%= 2 %></p>
+                    <form action="/create-order" method="post">
+                        <button class="btn" type="/submit">Order Now</button>
+                    </form>
                 <% } else { %>
                     <h1>No Products Found!</h1>
                     <% } %>

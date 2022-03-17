@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
+const Order = require('../models/order');
 
 //Index home page 
 exports.getIndex = (req, res, next) => {
@@ -170,6 +171,18 @@ exports.getOrders = (req, res, next) => {
   });
 };
 
+exports.postCreateOrder = (req, res, next) => {
+  //get all the cart items
+  req.user.getCart()
+  .then(cart =>{
+    return cart.getProducts();
+  })
+  .then(products =>{
+    // we get product arrays
+
+  })
+  .catch(err => console.log(`<----Error Generated while posting order from cart---->`, err))
+}
 
 exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
