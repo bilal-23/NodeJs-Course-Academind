@@ -51,39 +51,7 @@ exports.getCart = (req, res, next) => {
       products: products
     });
   });
-  // req.user
-  //   .getCart()
-  //   .then(cart => {
-  //     return cart.getProducts();
-  //   })
-  //   .then(products => {
-  //     res.render('shop/cart', {
-  //       path: '/cart',
-  //       pageTitle: 'Your Cart',
-  //       products: products
-  //     });
-  //   })
-  //   .catch(err => console.log(`<----Error Generated while fetching cart---->`))
 
-  // Cart.getCart(cart => {
-  //   const totalPrice = cart.totalPrice;
-  //   Product.fetchAll(products => {
-  //     const cartProducts = [];
-  //     products.forEach(product => {
-  //       const cartProductData = cart.products.find(item => item.id === product.id);
-  //       if (cartProductData) {
-  //         cartProducts.push({ ...product, quantity: cartProductData.quantity });
-  //       }
-  //     })
-  //     console.log(cartProducts);
-  //     res.render('shop/cart', {
-  //       path: '/cart',
-  //       products: cartProducts,
-  //       totalPrice: totalPrice,
-  //       pageTitle: 'Your Cart'
-  //     })
-  //   })
-  // });
 };
 
 
@@ -95,6 +63,7 @@ exports.postCart = (req, res, next) => {
   })
     .then(result => {
       console.log('Added product to cart', result)
+      res.redirect('/cart')
     })
     .catch(err => console.log(`<----Error Generated while adding to cart---->`, err));
 }
@@ -103,22 +72,14 @@ exports.postCart = (req, res, next) => {
 //deltew item from cart
 exports.postDeleteCartItem = (req, res) => {
   const prodId = req.body.productId;
-  req.user.getCart()
-    .then(cart => {
-      cart.getProducts({ where: { id: prodId } });
-    })
-    .then(products => {
-      const product = products[0];
-      product.cartItem.destroy();
-    })
+  req.user.deleteCartItem(prodId)
     .then(result => {
-      console.log(`<----Deleted from cart---->`, result)
+      console.log(result);
+      res.redirect('/cart');
     })
-    .catch(err => console.log(`<----Error Generated while fetching cart---->`, err))
-  Product.findById(id, product => {
-    Cart.deleteProduct(id, product.price);
-    res.redirect('/cart');
-  })
+    .catch(err => {
+      console.log(err);
+    })
 }
 
 
