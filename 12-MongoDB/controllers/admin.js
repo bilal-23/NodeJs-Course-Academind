@@ -2,18 +2,19 @@ const Product = require('../models/product');
 
 
 // //All products list
-// exports.getProducts = (req, res, next) => {
-//   req.user.
-//   getProducts().then(products => {
-//     res.render('admin/products', {
-//       prods: products,
-//       pageTitle: 'Admin Products',
-//       path: '/admin/products',
-//     });
-//   })
+exports.getProducts = (req, res, next) => {
 
-//     .catch(err => console.log("<--Error-->", err))
-// };
+  Product.fetchAll()
+    .then(products => {
+      res.render('admin/products', {
+        prods: products,
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
+      });
+    })
+    .catch(err => console.log("<--Error-->", err))
+
+};
 
 
 //Add product form page
@@ -33,7 +34,6 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  //user is associated to products
   const product = new Product(title, imageUrl, price, description);
   product.save()
     .then(result => {
