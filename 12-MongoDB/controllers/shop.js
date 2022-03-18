@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
 const Order = require('../models/order');
+const User = require('../models/user');
 
 //<-- / route,  -->
 exports.getIndex = (req, res, next) => {
@@ -43,20 +44,26 @@ exports.getProductDetail = (req, res, next) => {
 
 
 exports.getCart = (req, res, next) => {
-
-  req.user
-    .getCart()
-    .then(cart => {
-      return cart.getProducts();
-    })
-    .then(products => {
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: products
-      });
-    })
-    .catch(err => console.log(`<----Error Generated while fetching cart---->`))
+  req.user.getCart().then(products => {
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      products: products
+    });
+  });
+  // req.user
+  //   .getCart()
+  //   .then(cart => {
+  //     return cart.getProducts();
+  //   })
+  //   .then(products => {
+  //     res.render('shop/cart', {
+  //       path: '/cart',
+  //       pageTitle: 'Your Cart',
+  //       products: products
+  //     });
+  //   })
+  //   .catch(err => console.log(`<----Error Generated while fetching cart---->`))
 
   // Cart.getCart(cart => {
   //   const totalPrice = cart.totalPrice;
