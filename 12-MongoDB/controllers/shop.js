@@ -83,45 +83,13 @@ exports.getCart = (req, res, next) => {
 //adds item to the cart for url add-to-cart
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId.trim();
-  let fetchedcart;
-  req.user
-    .getCart()
-    .then(cart => {
-      fetchedcart = cart;
-      return cart.getProducts({ where: { id: productId } });
-      //get product if it is already in the cart
-    })
-    .then(products => {
-      let product;
-      //check if the products array is not empty
-      if (products.length > 0) {
-        product = products[0];
-      }
-      let newQuantity = 1;
-      if (product) {
-        // if product already exist increase quantity by 1
-        const oldQuantity = product.cartItem.quantity;
-        newQuantity = oldQuantity + 1;
-        return fetchedcart.addProduct(product, {
-          through: {
-            quantity: newQuantity
-          }
-        })
-
-      }
-
-      // if product is not already in cart, find it in the db
-      Product.findByPk(productId)
-        .then(product => {
-          return fetchedcart.addProduct(product, { through: { quantity: newQuantity } });
-        })
-        .catch(err => console.log(`<----Error Generated while fetching product---->`));
-    })
+  Product.findById(productId).then(product => {
+    return req.user.addToCart(product)
+  })
     .then(result => {
-      console.log(`<----Added to cart---->`)
-      return res.redirect('/cart');
+      console.log('Added product to cart', result)
     })
-    .catch(err => console.log(`<----Error Generated while adding to cart---->`, err))
+    .catch(err => console.log(`<----Error Generated while adding to cart---->`, err));
 }
 
 
