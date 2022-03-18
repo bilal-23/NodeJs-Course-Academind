@@ -28,16 +28,18 @@ exports.getProducts = (req, res, next) => {
     .catch(err => console.log("<----Error Generated while fetching products---->"))
 };
 
-
+// get single product
 exports.getProductDetail = (req, res, next) => {
   const prodId = req.params.productId;
-  Product.findByPk(prodId).then((product) => {
-    res.render('shop/product-detail', {
-      product: product,
-      pageTitle: product.title,
-      path: '/products'
-    })
-  });
+
+  Product.findById(prodId)
+    .then((product) => {
+      res.render('shop/product-detail', {
+        product: product,
+        pageTitle: product.title,
+        path: '/products'
+      })
+    });
 }
 
 
