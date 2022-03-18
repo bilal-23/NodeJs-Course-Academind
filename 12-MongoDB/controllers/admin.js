@@ -34,7 +34,7 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(title, imageUrl, price, description);
+  const product = new Product(title, price, description, imageUrl);
   product.save()
     .then(result => {
       console.log('Added Product');
@@ -45,63 +45,50 @@ exports.postAddProduct = (req, res, next) => {
 
 
 // //Edit Product page
-// exports.getEditProduct = (req, res, next) => {
-//   const editMode = req.query.edit;
-//   if (editMode === "false") {
-//     res.redirect('/admin/products')
-//   }
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit;
+  if (editMode === "false") {
+    res.redirect('/admin/products')
+  }
 
-//   const productId = (req.params.productId);
-//   req.user
-//   .getProducts({where: { id : productId}}).then((products) => { //products will be an array even if its empty
-//     const product = products[0];
-//     if(!product){
-//       return res.redirect('/');
-//     }
-//     res.render('admin/edit-product', {
-//       product: product,
-//       pageTitle: 'Edit Product',
-//       path: '/admin/edit-product',
-//       editing: editMode,
-//     })
-//   })
-//     .catch(err => console.log("<--Error-->", err))
-// }
-
+  const productId = (req.params.productId);
+  Product.findById(productId).then((product) => { //products will be an array even if its empty
+    if (!product) {
+      return res.redirect('/');
+    }
+    res.render('admin/edit-product', {
+      product: product,
+      pageTitle: 'Edit Product',
+      path: '/admin/edit-product',
+      editing: editMode,
+    })
+  })
+    .catch(err => console.log("<--Error-->", err))
+}
 
 // //Edit Product form endpoint
-// exports.postEditProduct = (req, res) => {
-//   const { productId, title, imageUrl, price, description } = req.body;
+exports.postEditProduct = (req, res) => {
+  const { productId, title, imageUrl, price, description } = req.body;
 
-//   Product.findByPk(productId)
-//     .then(product => {
-//       product.title = title;
-//       product.imageUrl = imageUrl;
-//       product.price = price;
-//       product.description = description;
-//       return product.save();
-//     })
-//     .then(result => {
-//       res.redirect('/admin/products')
-//       console.log("<----UPDATED PRODUCT---->")
-//     })
-//     .catch(err => console.log("<----Error Updating Product---->"))
+  Product.updateProduct(productId, title, price, description, imageUrl)
+    .then(result => {
+      console.log("<----UPDATED PRODUCT---->", result)
+      res.redirect('/admin/products')
+    })
+    .catch(err => console.log("<----Error Updating Product---->", err))
 
-//   //overwriting on the already saved data
+  //overwriting on the already saved data
 
-// }
+}
 
 // //delete product form endpoint
-// exports.postDeleteProduct = (req, res) => {
-//   const productId = req.body.productId;
-//   Product.findByPk(productId)
-//     .then(product => {
-//       return product.destroy();
-//     })
-//     .then(result => {
-//       console.log("<---Product Deleted---->");
-//       res.redirect('/admin/products')
-//     })
-//     .catch(err => console.log("<----Error Deleting Product---->"))
-//   //redirect to admin products list
-// }
+exports.postDeleteProduct = (req, res) => {
+  const productId = req.body.productId;
+  Product.deleteById(productId)
+    .then(result => {
+      console.log(`Product deleted with id: ${productId}`);
+      res.redirect('/admin/products')
+    })
+    .catch(err => console.log("<----Error Deleting Product---->"))
+  //redirect to admin products list
+}
