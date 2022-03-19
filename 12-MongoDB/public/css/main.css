@@ -15,14 +15,21 @@ main {
   margin: auto;
 }
 
-.centered {
-  text-align: center;
-}
-
 form {
   display: inline;
 }
 
+.centered {
+  text-align: center;
+}
+
+.image {
+  height: 20rem;
+}
+
+.image img {
+  height: 100%;
+}
 
 .main-header {
   width: 100%;
@@ -198,8 +205,15 @@ form {
   color: white;
 }
 
-.image img {
-  width: 20%;
+.btn.danger {
+  color: red;
+  border-color: red;
+}
+
+.btn.danger:hover,
+.btn.danger:active {
+  background: red;
+  color: white;
 }
 
 @media (min-width: 768px) {
