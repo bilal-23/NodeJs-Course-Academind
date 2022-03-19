@@ -78,7 +78,7 @@ class User {
     addOrder() {
         const db = getDb();
         // we need whole info about the cart to place it in the order, not just the refernece of products
-        this.getCart()
+        return this.getCart()
             .then(products => {
                 const order = {
                     items: products,
@@ -100,11 +100,7 @@ class User {
 
     getOrders(userId) {
         const db = getDb();
-        res.render('shop/orders', {
-            path: '/orders',
-            pageTitle: 'Your Orders',
-
-        })
+        return db.collection('orders').find({ 'user._id': ObjectId(userId) }).toArray()
     }
 }
 
