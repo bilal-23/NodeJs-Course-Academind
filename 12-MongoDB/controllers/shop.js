@@ -84,7 +84,7 @@ exports.postDeleteCartItem = (req, res) => {
 
 
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders({ include: ['products'] }) //get all products related to this order, all done by sequelize
+  req.user.getOrders(req.user._id) //get all products related to this order, all done by sequelize
     .then(orders => {
       res.render('shop/orders', {
         path: '/orders',
@@ -98,32 +98,11 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.postCreateOrder = (req, res, next) => {
-  let fetchedCart;
-  //get all the cart items
-  req.user.getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then(products => {
-      //user has many orders
-      req.user.createOrder()
-        .then(order => {
-          return order.addProducts(products.map(product => {
-            product.orderItem = {
-              quantity: product.cartItem.quantity
-            }
-            return product;
-          }))
-        })
-    })
-    .then(result => {
-      return fetchedCart.setProducts(null); //drops all items in cart
-    })
+  req.user.addOrder()
     .then(result => {
       res.redirect('/orders')
     })
-    .catch(err => console.log(`<----Error Generated while posting order from cart---->`, err))
+    .catch(err => console.log(`<----Error Generated while creating order---->`, err))
 }
 
 exports.getCheckout = (req, res, next) => {

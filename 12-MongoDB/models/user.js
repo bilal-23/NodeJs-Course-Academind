@@ -1,4 +1,5 @@
 const getDb = require('../util/database').getDb;
+const res = require('express/lib/response');
 const { ObjectId } = require('mongodb');
 
 class User {
@@ -72,6 +73,38 @@ class User {
             .catch(err => {
                 console.log(err);
             })
+    }
+
+    addOrder() {
+        const db = getDb();
+        // we need whole info about the cart to place it in the order, not just the refernece of products
+        this.getCart()
+            .then(products => {
+                const order = {
+                    items: products,
+                    user: {
+                        _id: this._id,
+                        name: this.name
+                    }
+                }
+                return db.collection('orders').insertOne(order);
+            })
+            .then(result => {
+                this.cart = { items: [] };
+                return db.collection('users').updateOne({ _id: ObjectId(this._id) }, { $set: { cart: { items: [] } } })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    getOrders(userId) {
+        const db = getDb();
+        res.render('shop/orders', {
+            path: '/orders',
+            pageTitle: 'Your Orders',
+
+        })
     }
 }
 
